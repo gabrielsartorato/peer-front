@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import * as S from './styles';
 import Peer from "simple-peer";
 import { useRouter } from 'next/router';
-import { FaMicrophone, FaVideo } from 'react-icons/fa';
+import { FaMicrophone, FaVideo, FaEllipsisV } from 'react-icons/fa';
 
 const Video = (props) => {
     const ref = useRef();
@@ -25,24 +25,9 @@ const videoConstraints = {
     width: 480,
 };
 
-const Actions = () => {
-    return (
-        <>
-        <S.IconButton>
-            <FaMicrophone size={24} />
-        </S.IconButton>
-        <S.IconButton>
-            <FaVideo size={24} />
-        </S.IconButton>
-        <S.IconButton>
-            <FaMicrophone size={24} />
-        </S.IconButton>
-        </>
-    )
-}
-
 export function Room(props){
     const [peers, setPeers] = useState([]);
+    const [showCam, setShowCam] = useState(true);
     const userVideo = useRef();
     const peersRef = useRef([]);
 
@@ -50,8 +35,6 @@ export function Room(props){
 
     // const { roomID } = router.query;
     const roomID = '6caa2869-1cf6-48a7-b6bd-0354c13b6ae1';
-    
-    console.log('peers', peers);
 
     const socket = useMemo(
         () => io.connect('https://f4f4-201-69-118-20.ngrok.io'),
@@ -89,8 +72,6 @@ export function Room(props){
             });
 
             socket.on("receiving returned signal", payload => {
-                console.log("the paylod", payload);
-                console.log("the peersss refff ", peersRef.current);
                 const item = peersRef.current.find(p => p.peerID === payload.id);
                 item.peer.signal(payload.signal);
             });
@@ -132,14 +113,29 @@ export function Room(props){
     }
 
     return (
-        <S.Container>
-            <S.StyledVideo muted ref={userVideo} autoPlay playsInline />
-            {peers.map((peer, index) => {
-                return (
-                    <Video key={index} peer={peer} />
-                );
-            })}
-            <Actions />
-        </S.Container>
+        <S.Content>
+            <S.Container>
+                <S.VideoArea>
+                    <S.StyledVideo muted ref={userVideo} autoPlay playsInline />
+
+                    {peers.map((peer, index) => {
+                        return (
+                            <Video key={index} peer={peer} />
+                        );
+                    })}
+                </S.VideoArea>
+            </S.Container>
+            <S.Actions>
+                <S.IconButton>
+                    <FaMicrophone size={24} />
+                </S.IconButton>
+                <S.IconButton onClick={() => userVideo.current.pause()}>
+                    <FaVideo size={24} />
+                </S.IconButton>
+                <S.IconButton>
+                    <FaEllipsisV size={24} />
+                </S.IconButton>
+            </S.Actions>
+        </S.Content>
     );
 }
