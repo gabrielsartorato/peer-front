@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
-import * as S from './styles';
-// import { createHash  } from 'crypto';
 import { v1 as uuid } from "uuid";
+import * as S from './styles';
 
 export function CreateRoom () {
     const [groupName, setGroupName] = useState('');

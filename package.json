@@ -23,6 +23,7 @@
     "@types/react": "17.0.43",
     "@types/simple-peer": "^9.11.4",
     "@types/styled-components": "^5.1.24",
+    "@types/uuid": "^8.3.4",
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",
     "typescript": "4.6.3"
