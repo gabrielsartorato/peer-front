@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Content = styled.div`
+    background-color: #f0f0f5;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -15,7 +16,7 @@ export const VideoArea = styled.div`
     display: flex;
     gap: 16px;
     padding: 20px;
-    height: 95vh;
+    height: 92vh;
     width: 90%;
     margin: auto;
     flex-wrap: wrap;
@@ -49,7 +50,7 @@ export const IconButton = styled.button`
     height: 50px;
     padding: 16px;
     cursor: pointer;
-    background-color: #c3c3c3;
+    background-color: #d2d2d2;
     border: 0px;
     border-radius: 50%;
     display: flex;

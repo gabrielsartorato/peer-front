@@ -37,7 +37,7 @@ export function Room(props){
     const roomID = '6caa2869-1cf6-48a7-b6bd-0354c13b6ae1';
 
     const socket = useMemo(
-        () => io.connect('https://f4f4-201-69-118-20.ngrok.io'),
+        () => io.connect('https://500f-201-69-118-20.ngrok.io'),
         []
       );
 
