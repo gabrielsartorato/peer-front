@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import io from "socket.io-client";
 import * as S from './styles';
 import Peer from "simple-peer";
 import { useRouter } from 'next/router';
+import { FaMicrophone } from 'react-icons/fa';
 
 const Video = (props) => {
     const ref = useRef();
@@ -24,41 +25,53 @@ const videoConstraints = {
     width: 480,
 };
 
+const Actions = () => {
+    return (
+        <S.IconButton><FaMicrophone size={24} /></S.IconButton>
+    )
+}
+
 export function Room(props){
     const [peers, setPeers] = useState([]);
-    const socketRef = useRef();
+    // const socketRef = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
 
-    const router = useRouter();
-    const { roomID } = router.query;
+    // const router = useRouter();
+    // const { roomID } = router.query;
+
+    console.log('now perrs:', peers);
+
+    const roomID = '6caa2869-1cf6-48a7-b6bd-0354c13b6ae1';
+
+    const socket = useMemo(
+        () => io.connect('https://f4f4-201-69-118-20.ngrok.io'),
+        []
+      );
 
 
     useEffect(() => {
-        if(!roomID) return;
 
         try {
-            const socket = io('http://localhost:8000');
             socket.emit("join room", roomID);
-            socketRef.current = socket;
-            console.log('a');
+            console.log("join room id:", roomID, 'with socket:', socket);
             navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
                 userVideo.current.srcObject = stream;
-                socketRef.current.emit("join room", roomID);
-                socketRef.current.on("all users", users => {
-                    const peers = [];
+                socket.emit("join room", roomID);
+                socket.on("all users", users => {
+                    const peersList = [];
                     users.forEach(userID => {
-                        const peer = createPeer(userID, socketRef.current.id, stream);
+                        const peer = createPeer(userID, socket.id, stream);
                         peersRef.current.push({
                             peerID: userID,
                             peer,
                         })
-                        peers.push(peer);
+                        peersList.push(peer);
                     })
-                    setPeers(peers);
+                    setPeers(peersList);
                 })
     
-                socketRef.current.on("user joined", payload => {
+                socket.on("user joined", payload => {
                     const peer = addPeer(payload.signal, payload.callerID, stream);
                     peersRef.current.push({
                         peerID: payload.callerID,
@@ -68,12 +81,10 @@ export function Room(props){
                     setPeers(users => [...users, peer]);
                 });
     
-                socketRef.current.on("receiving returned signal", payload => {
+                socket.on("receiving returned signal", payload => {
                     const item = peersRef.current.find(p => p.peerID === payload.id);
                     item.peer.signal(payload.signal);
                 });
-
-                console.log("fim");
             })
         } catch (e){
             console.log("eee", e);
@@ -91,7 +102,7 @@ export function Room(props){
         });
 
         peer.on("signal", signal => {
-            socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
+            socket.emit("sending signal", { userToSignal, callerID, signal })
         })
 
         return peer;
@@ -105,7 +116,7 @@ export function Room(props){
         })
 
         peer.on("signal", signal => {
-            socketRef.current.emit("returning signal", { signal, callerID })
+            socket.emit("returning signal", { signal, callerID })
         })
 
         peer.signal(incomingSignal);
@@ -121,6 +132,7 @@ export function Room(props){
                     <Video key={index} peer={peer} />
                 );
             })}
+            <Actions />
         </S.Container>
     );
 }

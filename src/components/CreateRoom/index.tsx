@@ -10,7 +10,7 @@ export function CreateRoom () {
 
     function joinOnMeet() {
         if(!groupName) return;
-        router.push(`/room/${groupName}`);
+        router.push(`/room`);
     }
 
     return (
