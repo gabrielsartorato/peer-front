@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import * as S from './styles';
-// import { v1 as uuid } from "uuid";
+// import { createHash  } from 'crypto';
+import { v1 as uuid } from "uuid";
 
 export function CreateRoom () {
     const [groupName, setGroupName] = useState('');
@@ -9,20 +10,20 @@ export function CreateRoom () {
 
 
     function joinOnMeet() {
-        if(!groupName) return;
-        router.push(`/room`);
+        const id = uuid();
+        router.push(`/room/${id}`);
     }
 
     return (
-        <S.Form>
+        <div>
             <S.Label>Nome do grupo</S.Label>
             <S.Input 
                 value={groupName} 
                 onChange={(e)=> setGroupName(e.target.value)}
                 placeholder="Insira o nome do grupo"
             />
-            <S.Button onClick={joinOnMeet}>Entrar no Grupo</S.Button>
-        </S.Form>
+            <S.Button onClick={() => joinOnMeet()}>Entrar no Grupo</S.Button>
+        </div>
     );
 };
 
