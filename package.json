@@ -14,11 +14,14 @@
     "react-dom": "17.0.2",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.4.1",
+    "styled-components": "^5.3.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "17.0.23",
     "@types/react": "17.0.43",
+    "@types/simple-peer": "^9.11.4",
+    "@types/socket.io-client": "^3.0.0",
     "@types/styled-components": "^5.1.24",
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",
