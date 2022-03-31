@@ -110,7 +110,7 @@ export function Room(props) {
       socket.on("all users", (users) => {
         const peersList = [];
         users.forEach((user) => {
-          const peer = createPeer(user.id, socket.id, stream, user.name);
+          const peer = createPeer(user.id, socket.id, stream, userName);
           peersRef.current.push({
             peerID: user.id,
             name: user.name,
@@ -174,7 +174,7 @@ export function Room(props) {
 
           {peers.map((peer) => {
             return (
-              <Video key={peer.peerID} peer={peer.peer} name={peer.peerID} />
+              <Video key={peer.peerID} peer={peer.peer} name={peer.name} />
             );
           })}
         </S.VideoArea>
