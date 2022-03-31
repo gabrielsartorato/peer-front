@@ -1,29 +1,50 @@
 import React, { useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { v1 as uuid } from "uuid";
-import * as S from './styles';
+import * as S from "./styles";
 
-export function CreateRoom () {
-    const [groupName, setGroupName] = useState('');
-    const router = useRouter();
+export function CreateRoom() {
+  const [roomId, setRoomId] = useState("");
+  const [userName, setUserName] = useState("");
+  const router = useRouter();
 
+  function createMeet() {
+    const id = uuid();
+    router.push({
+      pathname: `/room/${id}`,
+      query: {
+        userName,
+      },
+    });
+  }
 
-    function joinOnMeet() {
-        const id = uuid();
-        router.push(`/room/${id}`);
-    }
+  function joinOnMeet() {
+    router.push({
+      pathname: `/room/${roomId}`,
+      query: {
+        userName,
+      },
+    });
+  }
 
-    return (
-        <div>
-            <S.Label>Nome do grupo</S.Label>
-            <S.Input 
-                value={groupName} 
-                onChange={(e)=> setGroupName(e.target.value)}
-                placeholder="Insira o nome do grupo"
-            />
-            <S.Button onClick={() => joinOnMeet()}>Entrar no Grupo</S.Button>
-        </div>
-    );
-};
+  return (
+    <div>
+      <S.Label>Insira seu nome</S.Label>
+      <S.Input
+        value={userName}
+        onChange={(e) => setUserName(e.target.value)}
+        placeholder="Insira seu nome"
+      />
+      <S.Label>ID da sala</S.Label>
+      <S.Input
+        value={roomId}
+        onChange={(e) => setRoomId(e.target.value)}
+        placeholder="Insira o ID da sala"
+      />
+      <S.Button onClick={() => joinOnMeet()}>Entrar na Sala</S.Button>
+      <S.Button onClick={() => createMeet()}>Criar Sala</S.Button>
+    </div>
+  );
+}
 
 export default CreateRoom;
