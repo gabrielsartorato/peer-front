@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { v1 as uuid } from "uuid";
