@@ -8,6 +8,7 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  presets: ["next/babel"]
 }
 
 module.exports = nextConfig
