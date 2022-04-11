@@ -10,7 +10,7 @@ import io from 'socket.io-client';
 import * as S from './styles';
 import Peer from 'simple-peer';
 import { useRouter } from 'next/router';
-import { FaMicrophone, FaMicrophoneSlash, FaPhoneSlash } from 'react-icons/fa';
+import { FaMicrophone, FaMicrophoneSlash, FaPhone } from 'react-icons/fa';
 import defaultImage from '../../../public/avatar/default-1.png';
 import Image from 'next/image';
 
@@ -19,7 +19,6 @@ const Video = (props) => {
 
   useEffect(() => {
     props.peer.on('stream', (stream) => {
-      console.log(stream);
       ref.current.srcObject = stream;
     });
   }, [props.peer]);
@@ -52,7 +51,17 @@ export function Room(props) {
   const { roomID: room_id, userName } = router.query;
   const roomID = room_id;
 
-  const socket = useMemo(() => io('http://localhost:8000/'), []);
+  const socket = useMemo(
+    () => io('https://strawberry-pudding-43161.herokuapp.com/'),
+    [],
+  );
+
+  // const socket = useMemo(() => io('http://localhost:8000/'), []);
+
+  const disconnectRoom = () => {
+    socket.disconnect();
+    router.push('/');
+  };
 
   const createPeer = useCallback(
     (userToSignal, callerID, stream, name) => {
@@ -98,7 +107,7 @@ export function Room(props) {
   useEffect(() => {
     // socketRef.current = io.connect("http://localhost:8000/");
     if (!roomID) return;
-    socket.on('connection', () => {
+    socket.on('connect', () => {
       socket.emit('join room', {
         roomID,
         name: userName,
@@ -164,12 +173,6 @@ export function Room(props) {
     });
   }, [addPeer, createPeer, roomID, socket, userName]);
 
-  const handleDisconnect = useCallback(() => {
-    socket.on('connection', () => {
-      socket.emit('disconnect');
-    });
-  }, [socket]);
-
   return (
     <S.Content>
       <S.Container>
@@ -207,12 +210,9 @@ export function Room(props) {
             <FaMicrophoneSlash size={24} />
           )}
         </S.IconButton>
-        <S.IconButtonDisconnect onClick={handleDisconnect}>
-          <FaPhoneSlash size={24} />
-        </S.IconButtonDisconnect>
-        {/* <S.IconButton>
-          <FaEllipsisV size={24} />
-        </S.IconButton> */}
+        <S.IconButton onClick={disconnectRoom} style={{ background: 'red' }}>
+          <FaPhone style={{ color: '#fff' }} size={24} />
+        </S.IconButton>
       </S.Actions>
     </S.Content>
   );
