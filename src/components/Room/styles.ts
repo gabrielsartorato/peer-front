@@ -67,6 +67,24 @@ export const IconButton = styled.button`
   }
 `;
 
+export const IconButtonDisconnect = styled.button`
+  width: 72px;
+  height: 50px;
+  padding: 16px;
+  cursor: pointer;
+  background: #ff5252;
+  border: 0px;
+  color: #fff;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
 export const Row = styled.div`
   display: flex;
   width: 100%;
