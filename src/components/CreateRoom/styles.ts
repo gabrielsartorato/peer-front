@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Form = styled.form`
-  display: 'flex';
-  flex-direction: 'column';
+  display: "flex";
+  flex-direction: "column";
   gap: 32px;
 `;
 
@@ -37,13 +37,28 @@ export const Button = styled.button<ButtonProps>`
 
   &:hover {
     opacity: 0.9;
-    cursor: ${(props) => (props.locked ? 'not-allowed' : 'pointer')};
+    cursor: ${(props) => (props.locked ? "not-allowed" : "pointer")};
   }
+`;
+
+export const Avatar = styled.div`
+  border-radius: 16rem;
+  overflow: hidden;
+  margin-bottom: -1.5rem;
 `;
 
 export const Row = styled.div`
   display: flex;
   flex-direction: row;
+
+  align-items: center;
+
+  gap: 12px;
+`;
+
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
 
   align-items: center;
 

@@ -1,11 +1,17 @@
 // @ts-nocheck
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { v1 as uuid } from 'uuid';
-import * as S from './styles';
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { v1 as uuid } from "uuid";
+import * as S from "./styles";
+import { getSession, signOut } from "next-auth/client";
+import Image from "next/image";
+import { FaSignOutAlt } from "react-icons/fa";
+interface UserLoggedin {
+  user: any;
+}
 
-export function CreateRoom() {
-  const [roomId, setRoomId] = useState('');
+export function CreateRoom({ user }: UserLoggedin) {
+  const [roomId, setRoomId] = useState("");
   const [userName, setUserName] = useState<string>();
   const router = useRouter();
 
@@ -29,23 +35,47 @@ export function CreateRoom() {
   }
 
   return (
-    <div>
+    <S.Column>
+      <S.Avatar>
+        <Image src={user?.image} alt={user?.name} width={200} height={200} />
+      </S.Avatar>
       <S.Row>
-        <S.Input
-          value={userName}
+        <h3>{user?.name}</h3>
+        <FaSignOutAlt onClick={() => signOut()} style={{ color: "#ff5252" }} />{" "}
+      </S.Row>
+      {/* <button onClick={() => signOut()}>Sign Out</button> */}
+      <S.Row>
+        {/* <S.Input
+          value={user?.name}
           onChange={(e) => setUserName(e.target.value)}
           placeholder="Insira seu nome"
-        />
+        /> */}
         <S.Button
           onClick={() => createMeet()}
-          disabled={userName === undefined || userName === '' ? true : false}
-          locked={userName === undefined || userName === '' ? true : false}
+          disabled={
+            user?.name === undefined || user?.name === "" ? true : false
+          }
+          locked={user?.name === undefined || user?.name === "" ? true : false}
         >
           Criar Sala
         </S.Button>
       </S.Row>
-    </div>
+    </S.Column>
   );
 }
 
 export default CreateRoom;
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session) {
+    context.res.writeHead(302, { Location: "/" });
+    context.res.end();
+    return {};
+  }
+  return {
+    props: {
+      user: session.user,
+    },
+  };
+}

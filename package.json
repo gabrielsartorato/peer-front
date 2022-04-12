@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "next": "12.1.0",
+    "next-auth": "^3.29.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
@@ -22,9 +23,8 @@
     "@types/node": "17.0.23",
     "@types/react": "17.0.43",
     "@types/simple-peer": "^9.11.4",
-    "@types/socket.io-client": "^3.0.0",
-    "@types/styled-components": "^5.1.24",
     "@types/socket.io-client": "^1.4.36",
+    "@types/styled-components": "^5.1.24",
     "@types/uuid": "^8.3.4",
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",

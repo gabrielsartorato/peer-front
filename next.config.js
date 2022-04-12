@@ -8,7 +8,10 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  presets: ["next/babel"]
-}
+  images: {
+    domains: ["lh3.googleusercontent.com"],
+  },
+  presets: ["next/babel"],
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
