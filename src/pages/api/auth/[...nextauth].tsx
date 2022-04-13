@@ -10,9 +10,9 @@ export default NextAuth({
       clientSecret: "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",
     }),
     AzureADProvider({
-      clientId: "75a35713-3817-455f-9615-db43082f8f7c",
-      clientSecret: "atl8Q~KoirdiQRtmwvWLrQHlx2mZnn6voRQ~JcZO",
-      tenantId: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+      clientId: process.env.AZURE_AD_CLIENT_ID,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+      tenantId: process.env.AZURE_AD_TENANT_ID,
     }),
   ],
 });

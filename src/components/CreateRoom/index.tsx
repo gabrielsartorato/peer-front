@@ -37,7 +37,12 @@ export function CreateRoom({ user }: UserLoggedin) {
   return (
     <S.Column>
       <S.Avatar>
-        <Image src={user?.image} alt={user?.name} width={200} height={200} />
+        <Image
+          src={user?.image || "/avatar/default-1.png"}
+          alt={user?.name}
+          width={200}
+          height={200}
+        />
       </S.Avatar>
       <S.Row>
         <h3>{user?.name}</h3>
