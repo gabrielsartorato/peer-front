@@ -4,7 +4,7 @@ import Image from "next/image";
 import CreateRoom from "../components/CreateRoom";
 import styles from "../styles/Home.module.css";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { FaGoogle, FaMicrosoft } from "react-icons/fa";
+import { FaGoogle, FaMicrosoft, FaSignInAlt } from "react-icons/fa";
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
@@ -23,32 +23,14 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         {!session && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-            }}
+          <button
+            className={styles.primaryButtonAuth0}
+            onClick={() => signIn("auth0")}
           >
-            <h3>Para continuar, faça o login:</h3>
-            <>
-              <button
-                className={styles.primaryButtonGoogle}
-                onClick={() => signIn("google")}
-              >
-                <div className={styles.divRow}>
-                  <FaGoogle size={24} /> <h4>Entrar com Google</h4>
-                </div>
-              </button>
-              <button
-                className={styles.primaryButtonMsft}
-                onClick={() => signIn("azure-ad")}
-              >
-                <div className={styles.divRow}>
-                  <FaMicrosoft size={24} /> <h4>Entrar com Microsoft</h4>
-                </div>
-              </button>
-            </>
-          </div>
+            <div className={styles.divRow}>
+              <h4>Escolha uma conta para continuar</h4>
+            </div>
+          </button>
         )}
         {session && <CreateRoom user={session.user} />}
       </main>

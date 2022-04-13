@@ -141,6 +141,21 @@
   margin-bottom: 1rem;
 }
 
+.primaryButtonAuth0 {
+  cursor: pointer;
+  background: #6614d2;
+  border: 1px solid #6614d2;
+  color: #fff;
+  border-radius: 8px;
+  display: inline-block;
+  line-height: 0;
+
+  font-size: 1rem;
+  height: 56px;
+  width: 344px;
+  margin-bottom: 1rem;
+}
+
 .divRow {
   display: flex;
   flex-direction: row;

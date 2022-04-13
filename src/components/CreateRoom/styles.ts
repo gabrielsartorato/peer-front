@@ -42,9 +42,11 @@ export const Button = styled.button<ButtonProps>`
 `;
 
 export const Avatar = styled.div`
-  border-radius: 16rem;
-  overflow: hidden;
   margin-bottom: -1.5rem;
+
+  img {
+    border-radius: 16rem;
+  }
 `;
 
 export const Row = styled.div`
@@ -63,4 +65,12 @@ export const Column = styled.div`
   align-items: center;
 
   gap: 12px;
+`;
+
+export const Logout = styled.div`
+  color: #ff5252;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

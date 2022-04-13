@@ -15,6 +15,8 @@ export function CreateRoom({ user }: UserLoggedin) {
   const [userName, setUserName] = useState<string>();
   const router = useRouter();
 
+  console.log(user);
+
   function createMeet() {
     const id = uuid();
     router.push({
@@ -46,10 +48,12 @@ export function CreateRoom({ user }: UserLoggedin) {
       </S.Avatar>
       <S.Row>
         <h3>{user?.name}</h3>
-        <FaSignOutAlt
-          onClick={() => signOut()}
-          style={{ color: "#ff5252" }}
-        />{" "}
+        <S.Logout>
+          <FaSignOutAlt
+            onClick={() => signOut()}
+            
+          />
+        </S.Logout>
       </S.Row>
       <S.Row>
         <S.Button
