@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { v1 as uuid } from "uuid";
 import * as S from "./styles";
-import { getSession, signOut } from "next-auth/client";
+import { getSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import { FaSignOutAlt } from "react-icons/fa";
 interface UserLoggedin {
@@ -41,15 +41,12 @@ export function CreateRoom({ user }: UserLoggedin) {
       </S.Avatar>
       <S.Row>
         <h3>{user?.name}</h3>
-        <FaSignOutAlt onClick={() => signOut()} style={{ color: "#ff5252" }} />{" "}
+        <FaSignOutAlt
+          onClick={() => signOut()}
+          style={{ color: "#ff5252" }}
+        />{" "}
       </S.Row>
-      {/* <button onClick={() => signOut()}>Sign Out</button> */}
       <S.Row>
-        {/* <S.Input
-          value={user?.name}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Insira seu nome"
-        /> */}
         <S.Button
           onClick={() => createMeet()}
           disabled={

@@ -3,13 +3,13 @@ import Head from "next/head";
 import Image from "next/image";
 import CreateRoom from "../components/CreateRoom";
 import styles from "../styles/Home.module.css";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 
 const Home: NextPage = () => {
-  const [session, loadingSession] = useSession();
+  const { data: session, status } = useSession();
 
-  if (loadingSession) {
+  if (status === "loading") {
     return <p>Loading...</p>;
   }
 
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
               </button>
               <button
                 className={styles.primaryButtonMsft}
-                onClick={() => signIn()}
+                onClick={() => signIn("azure-ad")}
               >
                 <div className={styles.divRow}>
                   <FaMicrosoft size={24} /> <h4>Entrar com Microsoft</h4>

@@ -1,49 +1,18 @@
-/* export default NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId:
-        "488864015864-72bd7a43lqr6hfa6oohe3r83u5p82cuj.apps.googleusercontent.com",
-      clientSecret: "5xAUb7E8Er8efwGJHdG8TSUI",
-    }),
-  ],
-  jwt: {
-    encrypted: true,
-  },
-}); */
-
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import GoogleProvider from "next-auth/providers/google";
+import AzureADProvider from "next-auth/providers/azure-ad";
 
 export default NextAuth({
   providers: [
-    Providers.Google({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-      authorizationUrl:
-        "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code",
+    GoogleProvider({
+      clientId:
+        "579400357447-25n5pbi22pp7j19aglhc0bng43991tth.apps.googleusercontent.com",
+      clientSecret: "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",
     }),
-    Providers.AzureADB2C({
-      clientId: process.env.AZURE_AD_CLIENT_ID,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
-      tenantId: process.env.AZURE_AD_TENANT_ID,
+    AzureADProvider({
+      clientId: "75a35713-3817-455f-9615-db43082f8f7c",
+      clientSecret: "atl8Q~KoirdiQRtmwvWLrQHlx2mZnn6voRQ~JcZO",
+      tenantId: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
     }),
   ],
-  jwt: {
-    encryption: true,
-  },
-  secret: process.env.SECRET,
-  callbacks: {
-    async jwt(token, account) {
-      if (account?.accessToken) {
-        token.accessToken = account.accessToken;
-      }
-      return token;
-    },
-    redirect: async (url, _baseUrl) => {
-      if (url === "/profile") {
-        return Promise.resolve("/");
-      }
-      return Promise.resolve("/");
-    },
-  },
 });
