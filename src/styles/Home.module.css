@@ -4,7 +4,6 @@
 
 .main {
   min-height: 100vh;
-  padding: 4rem 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -118,8 +117,8 @@
 .primaryButtonGoogle {
   padding: 0 30px 1rem 30px;
   cursor: pointer;
-  background: rgba(225,98,89,255);
-  border: 1px solid rgba(225,98,89,255);
+  background: rgba(225, 98, 89, 255);
+  border: 1px solid rgba(225, 98, 89, 255);
   color: #fff;
 
   font-size: 1rem;

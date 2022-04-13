@@ -15,24 +15,16 @@ export function CreateRoom({ user }: UserLoggedin) {
   const [userName, setUserName] = useState<string>();
   const router = useRouter();
 
-  console.log(user);
-
   function createMeet() {
     const id = uuid();
     router.push({
       pathname: `/room/${id}`,
-      query: {
-        userName,
-      },
     });
   }
 
   function joinOnMeet() {
     router.push({
       pathname: `/room/${roomId}`,
-      query: {
-        userName,
-      },
     });
   }
 
@@ -49,10 +41,7 @@ export function CreateRoom({ user }: UserLoggedin) {
       <S.Row>
         <h3>{user?.name}</h3>
         <S.Logout>
-          <FaSignOutAlt
-            onClick={() => signOut()}
-            
-          />
+          <FaSignOutAlt onClick={() => signOut()} />
         </S.Logout>
       </S.Row>
       <S.Row>
