@@ -37,6 +37,10 @@ export const UserCard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  img {
+    border-radius: 50%;
+  }
 `;
 
 export const StyledVideo = styled.video`

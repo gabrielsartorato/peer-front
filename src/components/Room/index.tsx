@@ -50,7 +50,7 @@ export function Room(props) {
   const router = useRouter();
   let userStream;
 
-  const { roomID: room_id, userName } = router.query;
+  const { roomID: room_id } = router.query;
   const roomID = room_id;
 
   const socket = useMemo(
@@ -112,7 +112,7 @@ export function Room(props) {
     socket.on("connect", () => {
       socket.emit("join room", {
         roomID,
-        name: userName,
+        name: session?.user?.name,
       });
     });
 
@@ -122,7 +122,12 @@ export function Room(props) {
       socket.on("all users", (users) => {
         const peersList = [];
         users.forEach((user) => {
-          const peer = createPeer(user.id, socket.id, stream, userName);
+          const peer = createPeer(
+            user.id,
+            socket.id,
+            stream,
+            session?.user?.name
+          );
           peersRef.current.push({
             peerID: user.id,
             name: user.name,
@@ -173,7 +178,7 @@ export function Room(props) {
         setPeers(peers);
       });
     });
-  }, [addPeer, createPeer, roomID, socket, userName]);
+  }, [addPeer, createPeer, roomID, socket, session?.user?.name]);
 
   return (
     <S.Content>
@@ -187,6 +192,7 @@ export function Room(props) {
               height={150}
               alt="userName"
             />
+            <p>{session?.user?.name}</p>
           </S.UserCard>
 
           {peers.map((peer) => {
