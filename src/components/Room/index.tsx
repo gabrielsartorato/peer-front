@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { FaMicrophone, FaMicrophoneSlash, FaPhone } from "react-icons/fa";
 import defaultImage from "../../../public/avatar/default-1.png";
 import Image from "next/image";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const Video = (props) => {
   const ref = useRef();
@@ -27,38 +27,35 @@ const Video = (props) => {
   return (
     <S.UserCard>
       <S.StyledVideo playsInline autoPlay ref={ref} hidden />
-      <Image src={defaultImage} alt={props.name} width={150} height={150} />
+      <Image
+        src={props.avatar || defaultImage}
+        alt={props.name}
+        width={150}
+        height={150}
+      />
       <p>{props.name}</p>
     </S.UserCard>
   );
 };
 
-const videoConstraints = {
-  height: 240,
-  width: 480,
-};
-
-export function Room(props) {
-  const { data: session, status } = useSession();
+export function Room() {
+  const { data: session } = useSession();
   const [peers, setPeers] = useState([]);
   const [audioState, setAudioState] = useState(true);
-  const socketRef = useRef();
-  // const [userStream, setUserStream] = useState(null);
   const userVideo = useRef();
   const peersRef = useRef([]);
 
   const router = useRouter();
-  let userStream;
 
   const { roomID: room_id } = router.query;
   const roomID = room_id;
 
-  const socket = useMemo(
-    () => io("https://strawberry-pudding-43161.herokuapp.com/"),
-    []
-  );
+  // const socket = useMemo(
+  //   () => io("https://strawberry-pudding-43161.herokuapp.com/"),
+  //   []
+  // );
 
-  // const socket = useMemo(() => io('http://localhost:8000/'), []);
+  const socket = useMemo(() => io("http://localhost:8000/"), []);
 
   const disconnectRoom = () => {
     socket.disconnect();
@@ -66,7 +63,7 @@ export function Room(props) {
   };
 
   const createPeer = useCallback(
-    (userToSignal, callerID, stream, name) => {
+    (userToSignal, callerID, stream, name, avatar) => {
       const peer = new Peer({
         initiator: true,
         trickle: false,
@@ -79,6 +76,7 @@ export function Room(props) {
           callerID,
           signal,
           name,
+          avatar,
         });
       });
 
@@ -88,7 +86,7 @@ export function Room(props) {
   );
 
   const addPeer = useCallback(
-    (incomingSignal, callerID, stream, name) => {
+    (incomingSignal, callerID, stream, name, avatar) => {
       const peer = new Peer({
         initiator: false,
         trickle: false,
@@ -96,7 +94,7 @@ export function Room(props) {
       });
 
       peer.on("signal", (signal) => {
-        socket.emit("returning signal", { signal, callerID, name });
+        socket.emit("returning signal", { signal, callerID, name, avatar });
       });
 
       peer.signal(incomingSignal);
@@ -107,12 +105,12 @@ export function Room(props) {
   );
 
   useEffect(() => {
-    // socketRef.current = io.connect("http://localhost:8000/");
     if (!roomID) return;
     socket.on("connect", () => {
       socket.emit("join room", {
         roomID,
         name: session?.user?.name,
+        avatar: session?.user?.image,
       });
     });
 
@@ -126,17 +124,20 @@ export function Room(props) {
             user.id,
             socket.id,
             stream,
-            session?.user?.name
+            session?.user?.name,
+            session?.user?.image
           );
           peersRef.current.push({
             peerID: user.id,
             name: user.name,
             peer,
+            avatar: user.avatar,
           });
           peersList.push({
             peerID: user.id,
             name: user.name,
             peer,
+            avatar: user.avatar,
           });
         });
         setPeers(peersList);
@@ -147,18 +148,21 @@ export function Room(props) {
           payload.signal,
           payload.callerID,
           stream,
-          payload.name
+          payload.name,
+          payload.avatar
         );
         peersRef.current.push({
           peerID: payload.callerID,
           name: payload.name,
           peer,
+          avatar: payload.avatar,
         });
 
         const peerObj = {
           peer,
           peerID: payload.callerID,
           name: payload.name,
+          avatar: payload.avatar,
         };
         setPeers((users) => [...users, peerObj]);
       });
@@ -178,7 +182,14 @@ export function Room(props) {
         setPeers(peers);
       });
     });
-  }, [addPeer, createPeer, roomID, socket, session?.user?.name]);
+  }, [
+    addPeer,
+    createPeer,
+    roomID,
+    socket,
+    session?.user?.name,
+    session?.user?.image,
+  ]);
 
   return (
     <S.Content>
@@ -197,7 +208,12 @@ export function Room(props) {
 
           {peers.map((peer) => {
             return (
-              <Video key={peer.peerID} peer={peer.peer} name={peer.name} />
+              <Video
+                key={peer.peerID}
+                peer={peer.peer}
+                name={peer.name}
+                avatar={peer.avatar}
+              />
             );
           })}
         </S.VideoArea>
