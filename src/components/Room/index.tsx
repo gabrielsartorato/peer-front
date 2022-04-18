@@ -50,12 +50,12 @@ export function Room() {
   const { roomID: room_id } = router.query;
   const roomID = room_id;
 
-  // const socket = useMemo(
-  //   () => io("https://strawberry-pudding-43161.herokuapp.com/"),
-  //   []
-  // );
+  const socket = useMemo(
+    () => io("https://strawberry-pudding-43161.herokuapp.com/"),
+    []
+  );
 
-  const socket = useMemo(() => io("http://localhost:8000/"), []);
+  // const socket = useMemo(() => io("http://localhost:8000/"), []);
 
   const disconnectRoom = () => {
     socket.disconnect();
