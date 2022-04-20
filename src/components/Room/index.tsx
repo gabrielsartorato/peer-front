@@ -16,16 +16,47 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 
 const Video = (props) => {
+  const [microphone, setMicrophone] = useState(false);
   const ref = useRef();
 
+  const audioContext = useRef(new AudioContext());
+
+  const audio = audioContext.current;
+
   useEffect(() => {
+    let scriptProcessor;
+
     props.peer.on("stream", (stream) => {
-      ref.current.srcObject = stream;
+      audio.resume().then(() => {
+        const micro = audio.createMediaStreamSource(stream);
+        const analyser = audio.createAnalyser();
+        scriptProcessor = audio.createScriptProcessor(2048, 1, 1);
+        ref.current.srcObject = stream;
+
+        analyser.smoothingTimeConstant = 0.8;
+        analyser.fftSize = 1024;
+
+        micro.connect(analyser);
+        analyser.connect(scriptProcessor);
+        scriptProcessor.connect(audio.destination);
+        scriptProcessor.onaudioprocess = () => {
+          const array = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(array);
+          const arraySum = array.reduce((a, value) => a + value, 0);
+          const average = arraySum / array.length;
+          setMicrophone(Math.round(average) > 5);
+        };
+      });
     });
-  }, [props.peer]);
+
+    return () => {
+      scriptProcessor.disconnect();
+      setMicrophone(false);
+    };
+  }, [audio, props.peer]);
 
   return (
-    <S.UserCard>
+    <S.UserCard microphone={microphone}>
       <S.StyledVideo playsInline autoPlay ref={ref} hidden />
       <Image
         src={props.avatar || defaultImage}
@@ -42,8 +73,13 @@ export function Room() {
   const { data: session } = useSession();
   const [peers, setPeers] = useState([]);
   const [audioState, setAudioState] = useState(true);
+  const [microphone, setMicrophone] = useState(false);
+
   const userVideo = useRef();
   const peersRef = useRef([]);
+  const audioContext = useRef(new AudioContext());
+
+  const audio = audioContext.current;
 
   const router = useRouter();
 
@@ -114,8 +150,29 @@ export function Room() {
       });
     });
 
+    let scriptProcessor;
+
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      userVideo.current.srcObject = stream;
+      audio.resume().then(() => {
+        const micro = audio.createMediaStreamSource(stream);
+        const analyser = audio.createAnalyser();
+        scriptProcessor = audio.createScriptProcessor(2048, 1, 1);
+        userVideo.current.srcObject = stream;
+
+        analyser.smoothingTimeConstant = 0.8;
+        analyser.fftSize = 1024;
+
+        micro.connect(analyser);
+        analyser.connect(scriptProcessor);
+        scriptProcessor.connect(audio.destination);
+        scriptProcessor.onaudioprocess = () => {
+          const array = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(array);
+          const arraySum = array.reduce((a, value) => a + value, 0);
+          const average = arraySum / array.length;
+          setMicrophone(Math.round(average) > 5);
+        };
+      });
 
       socket.on("all users", (users) => {
         const peersList = [];
@@ -182,6 +239,11 @@ export function Room() {
         setPeers(peers);
       });
     });
+
+    return () => {
+      scriptProcessor.disconnect();
+      setMicrophone(false);
+    };
   }, [
     addPeer,
     createPeer,
@@ -189,13 +251,14 @@ export function Room() {
     socket,
     session?.user?.name,
     session?.user?.image,
+    audio,
   ]);
 
   return (
     <S.Content>
       <S.Container>
         <S.VideoArea>
-          <S.UserCard>
+          <S.UserCard microphone={microphone}>
             <S.StyledVideo muted ref={userVideo} autoPlay playsInline hidden />
             <Image
               src={session.user?.image}
