@@ -1,4 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+type UserCardProps = {
+  microphone?: boolean;
+};
 
 export const Content = styled.div`
   background-color: #f0f0f5;
@@ -31,7 +35,7 @@ export const Actions = styled.div`
   margin: 12px 0px;
 `;
 
-export const UserCard = styled.div`
+export const UserCard = styled.div<UserCardProps>`
   width: 150px;
   display: flex;
   flex-direction: column;
@@ -40,7 +44,13 @@ export const UserCard = styled.div`
 
   img {
     border-radius: 50%;
+    ${({ microphone }) =>
+      microphone &&
+      css`
+        border: 5px solid #669df6 !important;
+      `}
   }
+  /* border-radius: 50%; */
 `;
 
 export const StyledVideo = styled.video`
